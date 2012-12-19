@@ -1,0 +1,6 @@
+<layers>
+  <layer
+    name="niteoweb.ipn.jvzoo"
+    interface="niteoweb.ipn.jvzoo.interfaces.INiteowebIpnJvzooLayer"
+  />
+</layers>
