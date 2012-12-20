@@ -6,6 +6,9 @@ from Testing import ZopeTestCase as ztc
 import doctest
 import unittest2 as unittest
 
+FLAGS = doctest.REPORT_ONLY_FIRST_FAILURE | \
+    doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
+
 
 def test_suite():
     import niteoweb.ipn.jvzoo
@@ -19,7 +22,7 @@ def test_suite():
         ztc.ZopeDocFileSuite(
             'tests/control_panel.txt', package='niteoweb.ipn.jvzoo',
             test_class=JvzooControlPanelTestCase,
-            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE | doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
+            optionflags=FLAGS,
         ),
     ])
 

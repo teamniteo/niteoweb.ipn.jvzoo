@@ -4,8 +4,6 @@ python:
 
 install:
   - make python=$( which python ) .installed.cfg
-  - bin/develop checkout niteoweb.ipn.core
-  - make python=$( which python ) .installed.cfg
 
 script:
   - make tests

@@ -31,4 +31,3 @@ class JVZooError(Exception):
 
 class SecretKeyNotSet(JVZooError):
     """Exception thrown when secret-key for @@jvzoo is not set."""
-
