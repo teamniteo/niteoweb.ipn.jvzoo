@@ -42,7 +42,9 @@ class JVZoo(grok.view):
             ipn = getAdapter(self.context, IIPN)
             if data['transaction_type'] in ['SALE', 'BILL', 'UNCANCEL-REBILL']:
                 ipn.enable_member()
-            elif data['transaction_type'] in ['RFND', 'CGBK', 'INSF', 'CANCEL-REBILL']:
+            elif data['transaction_type'] in ['RFND', 'CGBK',
+                                              'INSF', 'CANCEL-REBILL']:
+                # TODO: make the if clause above nicer ^^
                 ipn.disable_member()
             else:
                 raise Exception
