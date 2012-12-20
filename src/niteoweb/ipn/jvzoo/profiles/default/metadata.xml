@@ -1,3 +1,7 @@
 <metadata>
     <version>0100</version>
+    <dependencies>
+        <!-- <dependency>profile-niteoweb.ipn.core:default</dependency> -->
+        <dependency>profile-plone.app.registry:default</dependency>
+    </dependencies>
 </metadata>

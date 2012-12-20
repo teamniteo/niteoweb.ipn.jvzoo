@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Base module for unittesting."""
 
+from plone.app.controlpanel.tests import ControlPanelTestCase
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
@@ -63,3 +64,11 @@ class FunctionalTestCase(unittest.TestCase):
     """Base class for functional tests."""
 
     layer = FUNCTIONAL_TESTING
+
+
+class JvzooControlPanelTestCase(FunctionalTestCase, ControlPanelTestCase):
+    """Test case used for control panel tests
+
+    Comes with convenience methods from plone.app.controlpanel.
+
+    """

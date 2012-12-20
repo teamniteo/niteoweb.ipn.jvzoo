@@ -1,6 +1,6 @@
-================
+==================
 niteoweb.ipn.jvzoo
-================
+==================
 
 A Plone add-on that that integrates JVZoo digital products retailer system with
 Plone to enable paid memberships on your site.
@@ -29,11 +29,11 @@ How it works
    ``niteoweb.ipn`` package (on which this package depends on).
 
 
-Transaction type to ``niteoweb.ipn`` action mapping
-===================================================
+Transaction type to ``niteoweb.ipn.core`` action mapping
+========================================================
 
 JVZoo supports different `Transaction types`, like `Sale`, `Cancellation`,
-`Refund`, etc. These are mapped to actions provided by ``niteoweb.ipn``.
+`Refund`, etc. These are mapped to actions provided by ``niteoweb.ipn.core``.
 
 
 Installation
@@ -79,4 +79,24 @@ site to receive JVZoo server notifications.
 Confirm by logging-in to http://jvzoo.com and checking to see if there were any
 purchases (on ``Sellers`` tab). Also check if your received an email with
 username and password for accessing your site and try to login with them.
+
+
+Tips & Tricks
+=============
+
+JVZoo IPN API documentation
+---------------------------
+
+Available at http://support.jvzoo.com/Knowledgebase/Article/View/17/0/jvzipn.
+
+
+Mocked request
+--------------
+
+If you want to mock a request from JVZoo in your local development environment,
+run something along these lines:
+
+.. sourcecode:: bash
+
+    $ curl -d "ccustname=JohnSmith&ccuststate=&ccustcc=&ccustemail=test@email.com&cproditem=1&cprodtitle=TestProduct&cprodtype=STANDARD&ctransaction=SALE&ctransaffiliate=affiliate@email.com&ctransamount=1000&ctranspaymentmethod=&ctransvendor=&ctransreceipt=1&cupsellreceipt=&caffitid=&cvendthru=&cverify=1EC4B66A&ctranstime=1350388651" http://localhost:8080/Plone/@@jvzoo
 

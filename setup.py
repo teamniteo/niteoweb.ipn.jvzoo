@@ -36,7 +36,10 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'niteoweb.ipn',
+        'five.grok',
+        'niteoweb.ipn.core',
+        'Plone',
+        'plone.api',
         'setuptools',
     ],
     extras_require={
