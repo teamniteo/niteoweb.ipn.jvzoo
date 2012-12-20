@@ -35,6 +35,16 @@ Transaction type to ``niteoweb.ipn.core`` action mapping
 JVZoo supports different `Transaction types`, like `Sale`, `Cancellation`,
 `Refund`, etc. These are mapped to actions provided by ``niteoweb.ipn.core``.
 
+Mapping:
+ * SALE -> enable_member
+ * BILL -> enable_member
+ * RFND -> disable_member
+ * CGBK -> disable_member
+ * INSF -> disable_member
+ * CANCEL-REBILL -> disable_member
+ * UNCANCEL-REBILL -> enable_member
+
+Transaction types are explained in the JVZoo IPN documentation (URL below).
 
 Installation
 ============

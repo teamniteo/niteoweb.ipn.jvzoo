@@ -13,7 +13,7 @@ KEY_RECORD = 'niteoweb.ipn.jvzoo.interfaces.IJVZooSettings.secretkey'
 
 
 class TestJVZoo(IntegrationTestCase):
-    """Test all aspects of @@jvzoo."""
+    """Test runtime flow through @@jvzoo."""
 
     def setUp(self):
         """Prepare testing environment."""
@@ -137,13 +137,34 @@ class TestJVZoo(IntegrationTestCase):
         self.assertIn('Done.', html)
 
         # test log output
-        self.assertEqual(len(log.records), 1)
+        self.assertEqual(len(log.records), 2)
+
         self.assertEqual(log.records[0].name, 'niteoweb.ipn.jvzoo')
         self.assertEqual(log.records[0].levelname, 'INFO')
         self.assertEqual(
             log.records[0].getMessage(),
-            "POST successfully parsed for 'jsmith@email.com'",
+            "POST successfully parsed for 'jsmith@email.com'.",
         )
+
+        self.assertEqual(log.records[1].name, 'niteoweb.ipn.jvzoo')
+        self.assertEqual(log.records[1].levelname, 'INFO')
+        self.assertEqual(
+            log.records[1].getMessage(),
+            "Calling 'enable_member' in niteoweb.ipn.core.",
+        )
+
+
+class TestUtils(IntegrationTestCase):
+    """Test utility methods in @@jvzoo."""
+
+    def setUp(self):
+        """Prepare testing environment."""
+        self.portal = self.layer['portal']
+        self.view = self.portal.restrictedTraverse('jvzoo')
+
+    def tearDown(self):
+        """Clean up after yourself."""
+        log.clear()
 
     def test_verify_POST(self):
         """Test POST verification process."""

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """The @@jvzoo view that handles JVZoo purchase notifications."""
 
-
-from zope.component import getAdapter
 from five import grok
-from plone import api
 from niteoweb.ipn.core.interfaces import IIPN
 from niteoweb.ipn.jvzoo.interfaces import SecretKeyNotSet
+from niteoweb.ipn.jvzoo.interfaces import UnknownTransactionType
+from plone import api
 from Products.CMFCore.interfaces import ISiteRoot
+from zope.component import getAdapter
 
 import hashlib
 import logging
@@ -20,6 +20,17 @@ class JVZoo(grok.View):
 
     grok.context(ISiteRoot)
     grok.require('zope2.View')
+
+    TYPES_TO_ACTIONS = {
+        'SALE': 'enable_member',
+        'BILL': 'enable_member',
+        'RFND': 'disable_member',
+        'CGBK': 'disable_member',
+        'INSF': 'disable_member',
+        'CANCEL-REBILL': 'disable_member',
+        'UNCANCEL-REBILL': 'enable_member',
+    }
+    """Mapping from JVZoo Transaction Types to niteoweb.ipn.core actions."""
 
     def render(self):
         """Handler for JVZoo IPN POST requests."""
@@ -36,18 +47,18 @@ class JVZoo(grok.View):
             # verify and parse post
             self._verify_POST(params)
             data = self._parse_POST(params)
-            logger.info("POST successfully parsed for '%s'" % data['email'])
+            logger.info("POST successfully parsed for '%s'." % data['email'])
 
-            # call action in niteoweb.ipn.core based on transaction type
+            # call appropriate action in niteoweb.ipn.core
             ipn = getAdapter(self.context, IIPN)
-            if data['transaction_type'] in ['SALE', 'BILL', 'UNCANCEL-REBILL']:
-                ipn.enable_member()
-            elif data['transaction_type'] in ['RFND', 'CGBK',
-                                              'INSF', 'CANCEL-REBILL']:
-                # TODO: make the if clause above nicer ^^
-                ipn.disable_member()
+            ttype = data['transaction_type']
+            if ttype in self.TYPES_TO_ACTIONS:
+                action = self.TYPES_TO_ACTIONS[ttype]
+                logger.info("Calling '%s' in niteoweb.ipn.core." % action)
+                getattr(ipn, action)(data)
             else:
-                raise Exception
+                raise UnknownTransactionType(
+                    "Unknown Transaction Type '%s'." % ttype)
 
         except KeyError as ex:
             msg = "POST parameter missing: %s" % ex
