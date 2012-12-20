@@ -70,5 +70,4 @@ class JvzooControlPanelTestCase(FunctionalTestCase, ControlPanelTestCase):
     """Test case used for control panel tests
 
     Comes with convenience methods from plone.app.controlpanel.
-
     """

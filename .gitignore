@@ -8,3 +8,4 @@ lib
 parts
 var
 src/niteoweb.ipn.core/
+src/plone.api/

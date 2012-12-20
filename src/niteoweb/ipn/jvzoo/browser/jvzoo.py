@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger("niteoweb.ipn.jvzoo")
 
 
-class JVZoo(grok.view):
+class JVZoo(grok.View):
     """A view for handling IPN POST requests from JVZOO."""
 
     grok.context(ISiteRoot)
@@ -29,16 +29,16 @@ class JVZoo(grok.view):
 
         # prepare values
         params = dict(self.request.form)
-        settings = api.portal.get_registry_record(
-            'niteoweb.ipn.jvzoo.interfaces.IJVZooSettings')
-        params['secretkey'] = settings.secretkey
+        params['secretkey'] = api.portal.get_registry_record(
+            'niteoweb.ipn.jvzoo.interfaces.IJVZooSettings.secretkey')
 
         try:
             # verify and parse post
             self._verify_POST(params)
             data = self._parse_POST(params)
+            logger.info("POST successfully parsed for '%s'" % data['email'])
 
-            # call action in niteoweb.ipn based on transaction type
+            # call action in niteoweb.ipn.core based on transaction type
             ipn = getAdapter(self.context, IIPN)
             if data['transaction_type'] in ['SALE', 'BILL', 'UNCANCEL-REBILL']:
                 ipn.enable_member()
@@ -51,20 +51,20 @@ class JVZoo(grok.view):
 
         except KeyError as ex:
             msg = "POST parameter missing: %s" % ex
-            logger.error(msg)
+            logger.warning(msg)
             return msg
 
         except AssertionError:
             msg = "Checksum verification failed."
-            logger.error(msg)
+            logger.warning(msg)
             return msg
 
         except Exception as ex:
             msg = "POST handling failed: %s" % ex
-            logger.error(msg)
+            logger.warning(msg)
             return msg
 
-        return 'POST successfully parsed.'
+        return 'Done.'
 
     def _verify_POST(self, params):
         """Verifies if received POST is a valid JVZoo POST request.
@@ -96,6 +96,7 @@ class JVZoo(grok.view):
             'fullname': u"%s" % params['ccustname'].decode("utf-8"),
             'product_id': params['cproditem'],
             'product_name': params['cprodtitle'],
+            'payment_id': params['ctransreceipt'],
             'affiliate': params['ctransaffiliate'],
             'transaction_type': params['ctransaction'],
         }
