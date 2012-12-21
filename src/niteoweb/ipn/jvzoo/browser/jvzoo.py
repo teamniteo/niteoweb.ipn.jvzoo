@@ -36,7 +36,9 @@ class JVZoo(grok.View):
         """Handler for JVZoo IPN POST requests."""
         # check for POST request
         if not self.request.form:
-            return 'No POST request.'
+            msg = 'No POST request.'
+            logger.warning(msg)
+            return msg
 
         # prepare values
         params = dict(self.request.form)

@@ -24,10 +24,18 @@ class TestJVZoo(IntegrationTestCase):
         """Clean up after yourself."""
         log.clear()
 
+    def _assert_log_record(self, level, msg):
+        """Utility method for testing log output."""
+        self.assertEqual(log.records[0].name, 'niteoweb.ipn.jvzoo')
+        self.assertEqual(log.records[0].levelname, level)
+        self.assertEqual(log.records[0].getMessage(), msg,)
+        log.records.pop(0)
+
     def test_call_with_no_POST(self):
         """Test @@jvzoo's response when POST is empty."""
         html = self.view()
         self.failUnless('No POST request.' in html)
+        self._assert_log_record('WARNING', 'No POST request.')
 
     def test_call_with_missing_parameter(self):
         """Test @@jvzoo's response when POST is missing a parameter."""
@@ -44,10 +52,8 @@ class TestJVZoo(IntegrationTestCase):
 
         # test log output
         self.assertEqual(len(log.records), 1)
-        self.assertEqual(log.records[0].name, 'niteoweb.ipn.jvzoo')
-        self.assertEqual(log.records[0].levelname, 'WARNING')
-        self.assertEqual(
-            log.records[0].getMessage(),
+        self._assert_log_record(
+            'WARNING',
             "POST parameter missing: 'cverify'",
         )
 
@@ -64,10 +70,8 @@ class TestJVZoo(IntegrationTestCase):
 
         # test log output
         self.assertEqual(len(log.records), 1)
-        self.assertEqual(log.records[0].name, 'niteoweb.ipn.jvzoo')
-        self.assertEqual(log.records[0].levelname, 'WARNING')
-        self.assertEqual(
-            log.records[0].getMessage(),
+        self._assert_log_record(
+            'WARNING',
             "POST handling failed: JVZoo secret-key is not set.",
         )
 
@@ -87,10 +91,8 @@ class TestJVZoo(IntegrationTestCase):
 
         # test log output
         self.assertEqual(len(log.records), 1)
-        self.assertEqual(log.records[0].name, 'niteoweb.ipn.jvzoo')
-        self.assertEqual(log.records[0].levelname, 'WARNING')
-        self.assertEqual(
-            log.records[0].getMessage(),
+        self._assert_log_record(
+            'WARNING',
             "Checksum verification failed.",
         )
 
@@ -110,10 +112,8 @@ class TestJVZoo(IntegrationTestCase):
 
         # test log output
         self.assertEqual(len(log.records), 1)
-        self.assertEqual(log.records[0].name, 'niteoweb.ipn.jvzoo')
-        self.assertEqual(log.records[0].levelname, 'WARNING')
-        self.assertEqual(
-            log.records[0].getMessage(),
+        self._assert_log_record(
+            'WARNING',
             "POST handling failed: Internal foo.",
         )
 
@@ -139,32 +139,19 @@ class TestJVZoo(IntegrationTestCase):
         # test log output
         self.assertEqual(len(log.records), 2)
 
-        self.assertEqual(log.records[0].name, 'niteoweb.ipn.jvzoo')
-        self.assertEqual(log.records[0].levelname, 'INFO')
-        self.assertEqual(
-            log.records[0].getMessage(),
+        self._assert_log_record(
+            'INFO',
             "POST successfully parsed for 'jsmith@email.com'.",
         )
 
-        self.assertEqual(log.records[1].name, 'niteoweb.ipn.jvzoo')
-        self.assertEqual(log.records[1].levelname, 'INFO')
-        self.assertEqual(
-            log.records[1].getMessage(),
+        self._assert_log_record(
+            'INFO',
             "Calling 'enable_member' in niteoweb.ipn.core.",
         )
 
 
-class TestTransactionTypesToActionsMapping(IntegrationTestCase):
+class TestTransactionTypesToActionsMapping(TestJVZoo):
     """Test how Transaction Types map to niteoweb.ipn.core actions."""
-
-    def setUp(self):
-        """Prepare testing environment."""
-        self.portal = self.layer['portal']
-        self.view = self.portal.restrictedTraverse('jvzoo')
-
-    def tearDown(self):
-        """Clean up after yourself."""
-        log.clear()
 
     @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._verify_POST')
     @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._parse_POST')
