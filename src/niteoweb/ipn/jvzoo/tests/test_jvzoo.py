@@ -134,7 +134,7 @@ class TestJVZoo(IntegrationTestCase):
 
         # test html
         html = self.view()
-        self.assertIn('Done.', html)
+        self.assertEqual('Done.', html)
 
         # test log output
         self.assertEqual(len(log.records), 2)
@@ -154,8 +154,8 @@ class TestJVZoo(IntegrationTestCase):
         )
 
 
-class TestUtils(IntegrationTestCase):
-    """Test utility methods in @@jvzoo."""
+class TestTransactionTypesToActionsMapping(IntegrationTestCase):
+    """Test how Transaction Types map to niteoweb.ipn.core actions."""
 
     def setUp(self):
         """Prepare testing environment."""
@@ -165,6 +165,89 @@ class TestUtils(IntegrationTestCase):
     def tearDown(self):
         """Clean up after yourself."""
         log.clear()
+
+    @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._verify_POST')
+    @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._parse_POST')
+    def _run(self, parse_post, verify_post, ttype=None):
+        """TODO"""
+
+        # put something into self.request.form so it's not empty
+        self.portal.REQUEST.form = dict(value='non empty value')
+
+        verify_post.return_value = True
+        parse_post.return_value = dict(
+            email='jsmith@email.com',
+            transaction_type=ttype,
+        )
+
+        html = self.view()
+        self.assertEqual(len(log.records), 2)
+        self.assertEqual('Done.', html)
+
+    def test_SALE(self):
+        """Test SALE Transaction Type."""
+        self._run(ttype='SALE')
+
+        # test log output
+        msg = log.records[1].getMessage()
+        self.assertEqual(msg, "Calling 'enable_member' in niteoweb.ipn.core.")
+
+    def test_BILL(self):
+        """Test BILL Transaction Type."""
+        self._run(ttype='BILL')
+
+        # test log output
+        msg = log.records[1].getMessage()
+        self.assertEqual(msg, "Calling 'enable_member' in niteoweb.ipn.core.")
+
+    def test_RFND(self):
+        """Test RFND Transaction Type."""
+        self._run(ttype='RFND')
+
+        # test log output
+        msg = log.records[1].getMessage()
+        self.assertEqual(msg, "Calling 'disable_member' in niteoweb.ipn.core.")
+
+    def test_CGBK(self):
+        """Test CGBK Transaction Type."""
+        self._run(ttype='CGBK')
+
+        # test log output
+        msg = log.records[1].getMessage()
+        self.assertEqual(msg, "Calling 'disable_member' in niteoweb.ipn.core.")
+
+    def test_INSF(self):
+        """Test INSF Transaction Type."""
+        self._run(ttype='INSF')
+
+        # test log output
+        msg = log.records[1].getMessage()
+        self.assertEqual(msg, "Calling 'disable_member' in niteoweb.ipn.core.")
+
+    def test_CANCEL_REBILL(self):
+        """Test CANCEL-REBILL Transaction Type."""
+        self._run(ttype='CANCEL-REBILL')
+
+        # test log output
+        msg = log.records[1].getMessage()
+        self.assertEqual(msg, "Calling 'disable_member' in niteoweb.ipn.core.")
+
+    def test_UNCANCEL_REBILL(self):
+        """Test UNCANCEL-REBILL Transaction Type."""
+        self._run(ttype='UNCANCEL-REBILL')
+
+        # test log output
+        msg = log.records[1].getMessage()
+        self.assertEqual(msg, "Calling 'enable_member' in niteoweb.ipn.core.")
+
+
+class TestUtils(IntegrationTestCase):
+    """Test utility methods in @@jvzoo."""
+
+    def setUp(self):
+        """Prepare testing environment."""
+        self.portal = self.layer['portal']
+        self.view = self.portal.restrictedTraverse('jvzoo')
 
     def test_verify_POST(self):
         """Test POST verification process."""
