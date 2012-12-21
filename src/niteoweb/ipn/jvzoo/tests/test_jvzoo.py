@@ -155,8 +155,8 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._verify_POST')
     @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._parse_POST')
-    def _run(self, parse_post, verify_post, ttype=None):
-        """TODO"""
+    def _simulate_transaction(self, parse_post, verify_post, ttype=None):
+        """Simulate a transaction of a certain type from JVZoo."""
 
         # put something into self.request.form so it's not empty
         self.portal.REQUEST.form = dict(value='non empty value')
@@ -173,7 +173,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_SALE(self):
         """Test SALE Transaction Type."""
-        self._run(ttype='SALE')
+        self._simulate_transaction(ttype='SALE')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -181,7 +181,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_BILL(self):
         """Test BILL Transaction Type."""
-        self._run(ttype='BILL')
+        self._simulate_transaction(ttype='BILL')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -189,7 +189,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_RFND(self):
         """Test RFND Transaction Type."""
-        self._run(ttype='RFND')
+        self._simulate_transaction(ttype='RFND')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -197,7 +197,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_CGBK(self):
         """Test CGBK Transaction Type."""
-        self._run(ttype='CGBK')
+        self._simulate_transaction(ttype='CGBK')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -205,7 +205,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_INSF(self):
         """Test INSF Transaction Type."""
-        self._run(ttype='INSF')
+        self._simulate_transaction(ttype='INSF')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -213,7 +213,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_CANCEL_REBILL(self):
         """Test CANCEL-REBILL Transaction Type."""
-        self._run(ttype='CANCEL-REBILL')
+        self._simulate_transaction(ttype='CANCEL-REBILL')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -221,7 +221,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_UNCANCEL_REBILL(self):
         """Test UNCANCEL-REBILL Transaction Type."""
-        self._run(ttype='UNCANCEL-REBILL')
+        self._simulate_transaction(ttype='UNCANCEL-REBILL')
 
         # test log output
         msg = log.records[1].getMessage()
