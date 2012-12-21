@@ -26,7 +26,7 @@ How it works
    against the `Secret Key` you've set in the `Plone control panel`.
 
 #. If all checks out, ``@@jvzoo`` calls an appropriate action provided by the
-   ``niteoweb.ipn`` package (on which this package depends on).
+   ``niteoweb.ipn.core`` package (on which this package depends on).
 
 
 Transaction type to ``niteoweb.ipn.core`` action mapping
@@ -44,7 +44,8 @@ Mapping:
  * CANCEL-REBILL -> disable_member
  * UNCANCEL-REBILL -> enable_member
 
-Transaction types are explained in the JVZoo IPN documentation (URL below).
+Transaction types are explained in the JVZoo IPN documentation available on
+http://support.jvzoo.com/Knowledgebase/Article/View/17/0/jvzipn.
 
 Installation
 ============
@@ -70,8 +71,9 @@ set the ``JVZIPN Secret Key``.
 Plone
 -----
 
-Go to ``Site Setup`` -> ``jvzoo`` control panel form and configure
-the ``Secret Key`` field by pasting in the `Secret Key` you defined above.
+Go to ``Site Setup`` -> ``Configuration Registry`` control panel form and
+configure the ``Secret Key`` field by pasting it in the `niteoweb ipn jvzoo
+interfaces IJVZooSettings secretkey` field.
 
 
 Test it
@@ -104,9 +106,10 @@ Mocked request
 --------------
 
 If you want to mock a request from JVZoo in your local development environment,
-run something along these lines:
+run a command like this::
 
-.. sourcecode:: bash
+    $ curl -d "ccustname=JohnSmith&ccuststate=&ccustcc=&ccustemail=test@email.com&cproditem=1&cprodtitle=TestProduct&cprodtype=STANDARD&ctransaction=SALE&ctransaffiliate=affiliate@email.com&ctransamount=1000&ctranspaymentmethod=&ctransvendor=&ctransreceipt=1&cupsellreceipt=&caffitid=&cvendthru=&cverify=ABF7BA12&ctranstime=1350388651" http://localhost:8080/Plone/@@jvzoo
 
-    $ curl -d "ccustname=JohnSmith&ccuststate=&ccustcc=&ccustemail=test@email.com&cproditem=1&cprodtitle=TestProduct&cprodtype=STANDARD&ctransaction=SALE&ctransaffiliate=affiliate@email.com&ctransamount=1000&ctranspaymentmethod=&ctransvendor=&ctransreceipt=1&cupsellreceipt=&caffitid=&cvendthru=&cverify=1EC4B66A&ctranstime=1350388651" http://localhost:8080/Plone/@@jvzoo
+The command above assumes you have set your `Secret Key` in Plone to
+``secret``.
 

@@ -2,13 +2,8 @@
 """Module where all interfaces, events and exceptions live."""
 
 from niteoweb.ipn.jvzoo import JVZooMessageFactory as _
-from plone.theme.interfaces import IDefaultPloneLayer
 from zope import schema
 from zope.interface import Interface
-
-
-class INiteowebIpnJvzooLayer(IDefaultPloneLayer):
-    """Marker interface that defines a Zope 3 browser layer."""
 
 
 class IJVZooSettings(Interface):

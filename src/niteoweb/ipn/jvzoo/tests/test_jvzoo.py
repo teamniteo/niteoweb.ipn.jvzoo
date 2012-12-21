@@ -75,7 +75,7 @@ class TestJVZoo(IntegrationTestCase):
             "POST handling failed: JVZoo secret-key is not set.",
         )
 
-    @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._verify_POST')
+    @mock.patch('niteoweb.ipn.jvzoo.jvzoo.JVZoo._verify_POST')
     def test_call_with_invalid_checksum(self, verify_post):
         """Test @@jvzoo's response when checksum cannot be verified."""
 
@@ -96,7 +96,7 @@ class TestJVZoo(IntegrationTestCase):
             "Checksum verification failed.",
         )
 
-    @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._verify_POST')
+    @mock.patch('niteoweb.ipn.jvzoo.jvzoo.JVZoo._verify_POST')
     def test_call_with_internal_exception(self, verify_post):
         """Test @@jvzoo's response when there is an internal problem."""
 
@@ -117,8 +117,8 @@ class TestJVZoo(IntegrationTestCase):
             "POST handling failed: Internal foo.",
         )
 
-    @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._verify_POST')
-    @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._parse_POST')
+    @mock.patch('niteoweb.ipn.jvzoo.jvzoo.JVZoo._verify_POST')
+    @mock.patch('niteoweb.ipn.jvzoo.jvzoo.JVZoo._parse_POST')
     def test_call_with_valid_POST(self, parse_post, verify_post):
         """Test @@jvzoo's response when POST is valid."""
 
@@ -153,8 +153,8 @@ class TestJVZoo(IntegrationTestCase):
 class TestTransactionTypesToActionsMapping(TestJVZoo):
     """Test how Transaction Types map to niteoweb.ipn.core actions."""
 
-    @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._verify_POST')
-    @mock.patch('niteoweb.ipn.jvzoo.browser.jvzoo.JVZoo._parse_POST')
+    @mock.patch('niteoweb.ipn.jvzoo.jvzoo.JVZoo._verify_POST')
+    @mock.patch('niteoweb.ipn.jvzoo.jvzoo.JVZoo._parse_POST')
     def _simulate_transaction(self, parse_post, verify_post, ttype=None):
         """Simulate a transaction of a certain type from JVZoo."""
 
