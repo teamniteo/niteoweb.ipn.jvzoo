@@ -20,6 +20,11 @@ class TestJVZoo(IntegrationTestCase):
         self.portal = self.layer['portal']
         self.view = self.portal.restrictedTraverse('jvzoo')
 
+        # create test group
+        api.group.create(groupname='1')
+        group = api.group.get(groupname='1')
+        group.setGroupProperties(mapping={'validity': 31})
+
     def tearDown(self):
         """Clean up after yourself."""
         log.clear()
@@ -128,20 +133,22 @@ class TestJVZoo(IntegrationTestCase):
         # mock post handling
         verify_post.return_value = True
         parse_post.return_value = dict(
-            email='jsmith@email.com',
-            transaction_type='SALE'
+            email='new@test.com',
+            product_id='1',
+            trans_type='SALE',
+            fullname='New Member',
+            affiliate='aff@test.com'
         )
 
-        # test html
-        html = self.view()
-        self.assertEqual('Done.', html)
+        # test html output
+        self.assertEqual('Done.', self.view.render())
 
         # test log output
         self.assertEqual(len(log.records), 2)
 
         self._assert_log_record(
             'INFO',
-            "POST successfully parsed for 'jsmith@email.com'.",
+            "POST successfully parsed for 'new@test.com'.",
         )
 
         self._assert_log_record(
@@ -153,27 +160,40 @@ class TestJVZoo(IntegrationTestCase):
 class TestTransactionTypesToActionsMapping(TestJVZoo):
     """Test how Transaction Types map to niteoweb.ipn.core actions."""
 
+    @mock.patch('niteoweb.ipn.jvzoo.jvzoo.getAdapter')
     @mock.patch('niteoweb.ipn.jvzoo.jvzoo.JVZoo._verify_POST')
     @mock.patch('niteoweb.ipn.jvzoo.jvzoo.JVZoo._parse_POST')
-    def _simulate_transaction(self, parse_post, verify_post, ttype=None):
+    def _simulate_transaction(
+        self,
+        parse_post,
+        verify_post,
+        getAdapter,
+        trans_type=None
+    ):
         """Simulate a transaction of a certain type from JVZoo."""
 
         # put something into self.request.form so it's not empty
         self.portal.REQUEST.form = dict(value='non empty value')
 
+        # mock methods
         verify_post.return_value = True
         parse_post.return_value = dict(
-            email='jsmith@email.com',
-            transaction_type=ttype,
+            email='new@test.com',
+            product_id='1',
+            trans_type=trans_type,
         )
+        getAdapter.return_value.enable_member.return_value = 'foo'
+        getAdapter.return_value.disable_member.return_value = 'bar'
 
         html = self.view()
-        self.assertEqual(len(log.records), 2)
         self.assertEqual('Done.', html)
+
+        # 1. post parsed, 2. action called
+        self.assertEqual(len(log.records), 2)
 
     def test_SALE(self):
         """Test SALE Transaction Type."""
-        self._simulate_transaction(ttype='SALE')
+        self._simulate_transaction(trans_type='SALE')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -181,7 +201,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_BILL(self):
         """Test BILL Transaction Type."""
-        self._simulate_transaction(ttype='BILL')
+        self._simulate_transaction(trans_type='BILL')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -189,7 +209,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_RFND(self):
         """Test RFND Transaction Type."""
-        self._simulate_transaction(ttype='RFND')
+        self._simulate_transaction(trans_type='RFND')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -197,7 +217,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_CGBK(self):
         """Test CGBK Transaction Type."""
-        self._simulate_transaction(ttype='CGBK')
+        self._simulate_transaction(trans_type='CGBK')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -205,7 +225,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_INSF(self):
         """Test INSF Transaction Type."""
-        self._simulate_transaction(ttype='INSF')
+        self._simulate_transaction(trans_type='INSF')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -213,7 +233,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_CANCEL_REBILL(self):
         """Test CANCEL-REBILL Transaction Type."""
-        self._simulate_transaction(ttype='CANCEL-REBILL')
+        self._simulate_transaction(trans_type='CANCEL-REBILL')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -221,7 +241,7 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
     def test_UNCANCEL_REBILL(self):
         """Test UNCANCEL-REBILL Transaction Type."""
-        self._simulate_transaction(ttype='UNCANCEL-REBILL')
+        self._simulate_transaction(trans_type='UNCANCEL-REBILL')
 
         # test log output
         msg = log.records[1].getMessage()
@@ -253,9 +273,7 @@ class TestUtils(IntegrationTestCase):
         post_params = dict(
             ccustname='fullname',
             ccustemail='email',
-            ctransreceipt='payment_id',
             cproditem='product_id',
-            cprodtitle='product_name',
             ctransaffiliate='affiliate',
             ctransaction='SALE',
         )
@@ -264,10 +282,8 @@ class TestUtils(IntegrationTestCase):
             fullname=u'fullname',
             email='email',
             product_id='product_id',
-            product_name='product_name',
             affiliate='affiliate',
-            payment_id='payment_id',
-            transaction_type='SALE',
+            trans_type='SALE',
         )
 
         result = self.view._parse_POST(post_params)

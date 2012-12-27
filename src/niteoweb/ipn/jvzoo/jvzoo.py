@@ -53,14 +53,21 @@ class JVZoo(grok.View):
 
             # call appropriate action in niteoweb.ipn.core
             ipn = getAdapter(self.context, IIPN)
-            ttype = data['transaction_type']
-            if ttype in self.TYPES_TO_ACTIONS:
-                action = self.TYPES_TO_ACTIONS[ttype]
+            trans_type = data['trans_type']
+            if trans_type in self.TYPES_TO_ACTIONS:
+                action = self.TYPES_TO_ACTIONS[trans_type]
                 logger.info("Calling '%s' in niteoweb.ipn.core." % action)
-                getattr(ipn, action)(data)
+                params = {
+                    'email': data['email'],
+                    'product_id': data['product_id'],
+                    'trans_type': data['trans_type'],
+                    'fullname': data.get('fullname'),    # optional
+                    'affiliate': data.get('affiliate'),  # optional
+                }
+                getattr(ipn, action)(**params)
             else:
                 raise UnknownTransactionType(
-                    "Unknown Transaction Type '%s'." % ttype)
+                    "Unknown Transaction Type '%s'." % trans_type)
 
         except KeyError as ex:
             msg = "POST parameter missing: %s" % ex
@@ -108,8 +115,6 @@ class JVZoo(grok.View):
             'email': params['ccustemail'],
             'fullname': u"%s" % params['ccustname'].decode("utf-8"),
             'product_id': params['cproditem'],
-            'product_name': params['cprodtitle'],
-            'payment_id': params['ctransreceipt'],
             'affiliate': params['ctransaffiliate'],
-            'transaction_type': params['ctransaction'],
+            'trans_type': params['ctransaction'],
         }
