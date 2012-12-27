@@ -2,12 +2,11 @@
 niteoweb.ipn.jvzoo
 ==================
 
-A Plone add-on that that integrates JVZoo digital products retailer system with
+A Plone add-on that integrates JVZoo digital products retailer system with
 Plone to enable paid memberships on your site.
 
 * `Source code @ GitHub <https://github.com/niteoweb/niteoweb.ipn.jvzoo>`_
 * `Releases @ PyPI <http://pypi.python.org/pypi/niteoweb.ipn.jvzoo>`_
-* `Documentation @ ReadTheDocs <http://niteowebipnjvz.readthedocs.org>`_
 * `Continuous Integration @ Travis-CI <http://travis-ci.org/niteoweb/niteoweb.ipn.jvzoo>`_
 
 
