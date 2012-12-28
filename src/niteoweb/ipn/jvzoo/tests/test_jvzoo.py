@@ -21,8 +21,8 @@ class TestJVZoo(IntegrationTestCase):
         self.view = self.portal.restrictedTraverse('jvzoo')
 
         # create test group
-        api.group.create(groupname='1')
-        group = api.group.get(groupname='1')
+        api.group.create(groupname='ipn_1')
+        group = api.group.get(groupname='ipn_1')
         group.setGroupProperties(mapping={'validity': 31})
 
     def tearDown(self):
