@@ -4,6 +4,9 @@ Changelog
 1.1 (Unreleased)
 ----------------
 
+- Abort transaction if something fails.
+  [zupo]
+
 - Use 'ipn_' as a prefix for product group IDs.
   [zupo]
 

@@ -9,6 +9,7 @@ from plone import api
 from Products.CMFCore.interfaces import ISiteRoot
 from zope.component import getAdapter
 
+import transaction
 import hashlib
 import logging
 
@@ -72,16 +73,19 @@ class JVZoo(grok.View):
         except KeyError as ex:
             msg = "POST parameter missing: %s" % ex
             logger.warning(msg)
+            transaction.abort()
             return msg
 
         except AssertionError:
             msg = "Checksum verification failed."
             logger.warning(msg)
+            transaction.abort()
             return msg
 
         except Exception as ex:
             msg = "POST handling failed: %s" % ex
             logger.warning(msg)
+            transaction.abort()
             return msg
 
         return 'Done.'
