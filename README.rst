@@ -107,7 +107,7 @@ Mocked request
 If you want to mock a request from JVZoo in your local development environment,
 run a command like this::
 
-    $ curl -d "ccustname=JohnSmith&ccuststate=&ccustcc=&ccustemail=test@email.com&cproditem=1&cprodtitle=TestProduct&cprodtype=STANDARD&ctransaction=SALE&ctransaffiliate=affiliate@email.com&ctransamount=1000&ctranspaymentmethod=&ctransvendor=&ctransreceipt=1&cupsellreceipt=&caffitid=&cvendthru=&cverify=ABF7BA12&ctranstime=1350388651" http://localhost:8080/Plone/@@jvzoo
+    $ curl -d "ccustname=JohnSmith&ccuststate=&ccustcc=&ccustemail=test@email.com&cproditem=1&cprodtitle=TestProduct&cprodtype=STANDARD&ctransaction=SALE&ctransaffiliate=affiliate@email.com&ctransamount=1000&ctranspaymentmethod=&ctransvendor=&ctransreceipt=1&cupsellreceipt=&caffitid=&cvendthru=&cverify=AACDD10E&ctranstime=1350388651" http://localhost:8080/Plone/@@jvzoo
 
 The command above assumes you have set your `Secret Key` in Plone to
 ``secret``.
