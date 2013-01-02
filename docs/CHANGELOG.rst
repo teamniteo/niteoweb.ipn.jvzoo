@@ -4,6 +4,9 @@ Changelog
 1.1 (Unreleased)
 ----------------
 
+- Depend on latest release of niteoweb.ipn.core.
+  [zupo]
+
 - Abort transaction if something fails.
   [zupo]
 
