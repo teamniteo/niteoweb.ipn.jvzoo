@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.1 (Unreleased)
+1.1 (2013-01-02)
 ----------------
 
 - Depend on latest release of niteoweb.ipn.core.
@@ -10,7 +10,7 @@ Changelog
 - Abort transaction if something fails.
   [zupo]
 
-- Use 'ipn_' as a prefix for product group IDs.
+- Use ``ipn_`` as a prefix for product group IDs.
   [zupo]
 
 
