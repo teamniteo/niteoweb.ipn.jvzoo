@@ -38,7 +38,7 @@ class JVZoo(grok.View):
         # check for POST request
         if not self.request.form:
             msg = 'No POST request.'
-            logger.warning(msg)
+            logger.warning("{0}: {1}".format(api.user.get_current(), msg))
             return msg
 
         # prepare values
@@ -50,14 +50,16 @@ class JVZoo(grok.View):
             # verify and parse post
             self._verify_POST(params)
             data = self._parse_POST(params)
-            logger.info("POST successfully parsed for '%s'." % data['email'])
+            logger.info("{0}: POST successfully parsed for '{1}'.".format(
+                api.user.get_current(), data['email']))
 
             # call appropriate action in niteoweb.ipn.core
             ipn = getAdapter(self.context, IIPN)
             trans_type = data['trans_type']
             if trans_type in self.TYPES_TO_ACTIONS:
                 action = self.TYPES_TO_ACTIONS[trans_type]
-                logger.info("Calling '%s' in niteoweb.ipn.core." % action)
+                logger.info("{0}: Calling '{1}' in niteoweb.ipn.core.".format(
+                    api.user.get_current(), action))
                 params = {
                     'email': data['email'],
                     'product_id': data['product_id'],
@@ -72,19 +74,19 @@ class JVZoo(grok.View):
 
         except KeyError as ex:
             msg = "POST parameter missing: %s" % ex
-            logger.warning(msg)
+            logger.warning("{0}: {1}".format(api.user.get_current(), msg))
             transaction.abort()
             return msg
 
         except AssertionError:
             msg = "Checksum verification failed."
-            logger.warning(msg)
+            logger.warning("{0}: {1}".format(api.user.get_current(), msg))
             transaction.abort()
             return msg
 
         except Exception as ex:
             msg = "POST handling failed: %s" % ex
-            logger.warning(msg)
+            logger.warning("{0}: {1}".format(api.user.get_current(), msg))
             transaction.abort()
             return msg
 

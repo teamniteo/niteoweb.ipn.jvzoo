@@ -29,18 +29,19 @@ class TestJVZoo(IntegrationTestCase):
         """Clean up after yourself."""
         log.clear()
 
-    def _assert_log_record(self, level, msg):
+    def _assert_log_record(self, level, user, msg):
         """Utility method for testing log output."""
         self.assertEqual(log.records[0].name, 'niteoweb.ipn.jvzoo')
         self.assertEqual(log.records[0].levelname, level)
-        self.assertEqual(log.records[0].getMessage(), msg,)
+        self.assertEqual(log.records[0].getMessage(), "{0}: {1}".format(
+            user, msg))
         log.records.pop(0)
 
     def test_call_with_no_POST(self):
         """Test @@jvzoo's response when POST is empty."""
         html = self.view()
         self.failUnless('No POST request.' in html)
-        self._assert_log_record('WARNING', 'No POST request.')
+        self._assert_log_record('WARNING', 'test_user_1_', "No POST request.")
 
     def test_call_with_missing_parameter(self):
         """Test @@jvzoo's response when POST is missing a parameter."""
@@ -59,6 +60,7 @@ class TestJVZoo(IntegrationTestCase):
         self.assertEqual(len(log.records), 1)
         self._assert_log_record(
             'WARNING',
+            'test_user_1_',
             "POST parameter missing: 'cverify'",
         )
 
@@ -77,6 +79,7 @@ class TestJVZoo(IntegrationTestCase):
         self.assertEqual(len(log.records), 1)
         self._assert_log_record(
             'WARNING',
+            'test_user_1_',
             "POST handling failed: JVZoo secret-key is not set.",
         )
 
@@ -98,6 +101,7 @@ class TestJVZoo(IntegrationTestCase):
         self.assertEqual(len(log.records), 1)
         self._assert_log_record(
             'WARNING',
+            'test_user_1_',
             "Checksum verification failed.",
         )
 
@@ -119,6 +123,7 @@ class TestJVZoo(IntegrationTestCase):
         self.assertEqual(len(log.records), 1)
         self._assert_log_record(
             'WARNING',
+            'test_user_1_',
             "POST handling failed: Internal foo.",
         )
 
@@ -148,11 +153,13 @@ class TestJVZoo(IntegrationTestCase):
 
         self._assert_log_record(
             'INFO',
+            'test_user_1_',
             "POST successfully parsed for 'new@test.com'.",
         )
 
         self._assert_log_record(
             'INFO',
+            'test_user_1_',
             "Calling 'enable_member' in niteoweb.ipn.core.",
         )
 
@@ -197,7 +204,8 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
         # test log output
         msg = log.records[1].getMessage()
-        self.assertEqual(msg, "Calling 'enable_member' in niteoweb.ipn.core.")
+        self.assertEqual(
+            msg, "test_user_1_: Calling 'enable_member' in niteoweb.ipn.core.")
 
     def test_BILL(self):
         """Test BILL Transaction Type."""
@@ -205,7 +213,8 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
         # test log output
         msg = log.records[1].getMessage()
-        self.assertEqual(msg, "Calling 'enable_member' in niteoweb.ipn.core.")
+        self.assertEqual(
+            msg, "test_user_1_: Calling 'enable_member' in niteoweb.ipn.core.")
 
     def test_RFND(self):
         """Test RFND Transaction Type."""
@@ -213,7 +222,10 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
         # test log output
         msg = log.records[1].getMessage()
-        self.assertEqual(msg, "Calling 'disable_member' in niteoweb.ipn.core.")
+        self.assertEqual(
+            msg,
+            "test_user_1_: Calling 'disable_member' in niteoweb.ipn.core.",
+        )
 
     def test_CGBK(self):
         """Test CGBK Transaction Type."""
@@ -221,7 +233,10 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
         # test log output
         msg = log.records[1].getMessage()
-        self.assertEqual(msg, "Calling 'disable_member' in niteoweb.ipn.core.")
+        self.assertEqual(
+            msg,
+            "test_user_1_: Calling 'disable_member' in niteoweb.ipn.core.",
+        )
 
     def test_INSF(self):
         """Test INSF Transaction Type."""
@@ -229,7 +244,10 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
         # test log output
         msg = log.records[1].getMessage()
-        self.assertEqual(msg, "Calling 'disable_member' in niteoweb.ipn.core.")
+        self.assertEqual(
+            msg,
+            "test_user_1_: Calling 'disable_member' in niteoweb.ipn.core.",
+        )
 
     def test_CANCEL_REBILL(self):
         """Test CANCEL-REBILL Transaction Type."""
@@ -237,7 +255,10 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
         # test log output
         msg = log.records[1].getMessage()
-        self.assertEqual(msg, "Calling 'disable_member' in niteoweb.ipn.core.")
+        self.assertEqual(
+            msg,
+            "test_user_1_: Calling 'disable_member' in niteoweb.ipn.core.",
+        )
 
     def test_UNCANCEL_REBILL(self):
         """Test UNCANCEL-REBILL Transaction Type."""
@@ -245,7 +266,10 @@ class TestTransactionTypesToActionsMapping(TestJVZoo):
 
         # test log output
         msg = log.records[1].getMessage()
-        self.assertEqual(msg, "Calling 'enable_member' in niteoweb.ipn.core.")
+        self.assertEqual(
+            msg,
+            "test_user_1_: Calling 'enable_member' in niteoweb.ipn.core.",
+        )
 
 
 class TestUtils(IntegrationTestCase):

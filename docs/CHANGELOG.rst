@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.2 (Unreleased)
+----------------
+
+- Prefix log entries with current user's username.
+  [zupo]
+
+
 1.1 (2013-01-02)
 ----------------
 
