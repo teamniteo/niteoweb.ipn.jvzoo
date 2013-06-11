@@ -1,14 +1,14 @@
 language: python
 python:
-  - {{{ python.version }}}
+  - 2.7
 
 install:
   - - $(which echo) -e "[buildout]\nextends = buildout.d/travis.cfg" > buildout.cfg
-  - make python=$( which python ) .installed.cfg
+  - make .installed.cfg
 
 script:
   - make tests
 
 notifications:
   irc:
-    - "{{{ author.irc }}}"
+    - "irc.freenode.org#niteoweb"

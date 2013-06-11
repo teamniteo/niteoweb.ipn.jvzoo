@@ -1,2 +1,3 @@
+recursive-include docs *
 graft src/niteoweb
 include *.cfg *.rst *.in
