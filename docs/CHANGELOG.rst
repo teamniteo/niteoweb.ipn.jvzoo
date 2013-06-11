@@ -1,10 +1,11 @@
 Changelog
 =========
 
-1.4 (unreleased)
+1.4 (2013-06-11)
 ----------------
 
-- Nothing changed yet.
+- Previous version was a brown-bag release.
+  [zupo]
 
 
 1.3 (2013-06-11)
