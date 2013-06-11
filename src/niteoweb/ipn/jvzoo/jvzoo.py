@@ -101,11 +101,12 @@ class JVZoo(grok.View):
         """
         if not params['secretkey']:
             raise SecretKeyNotSet('JVZoo secret-key is not set.')
-        strparams = ""
+        strparams = u""
+
         for key in iter(sorted(params.iterkeys())):
             if key in ['cverify', 'secretkey']:
                 continue
-            strparams += params[key] + "|"
+            strparams += unicode(params[key] + "|", 'utf-8')
         strparams += params['secretkey']
         sha = hashlib.sha1(strparams.encode('utf-8')).hexdigest().upper()
         assert params['cverify'] == sha[:8], 'Checksum verification failed.'
