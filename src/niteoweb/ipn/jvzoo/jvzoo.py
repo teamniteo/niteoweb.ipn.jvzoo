@@ -50,8 +50,15 @@ class JVZoo(grok.View):
             # verify and parse post
             self._verify_POST(params)
             data = self._parse_POST(params)
+
+            user = self.get_user_by_email(data['email'])
+            if user:
+                username = user.getUserName()
+            else:
+                username = data['email']
+
             logger.info("{0}: POST successfully parsed for '{1}'.".format(
-                api.user.get_current(), data['email']))
+                api.user.get_current(), username))
 
             # call appropriate action in niteoweb.ipn.core
             ipn = getAdapter(self.context, IIPN)
@@ -61,7 +68,7 @@ class JVZoo(grok.View):
                 logger.info("{0}: Calling '{1}' in niteoweb.ipn.core.".format(
                     api.user.get_current(), action))
                 params = {
-                    'email': data['email'],
+                    'email': username,  # username == email
                     'product_id': data['product_id'],
                     'trans_type': data['trans_type'],
                     'fullname': data.get('fullname'),    # optional
@@ -125,3 +132,13 @@ class JVZoo(grok.View):
             'affiliate': params['ctransaffiliate'],
             'trans_type': params['ctransaction'],
         }
+
+    def get_user_by_email(self, email):
+        user = api.user.get(username=email)
+        if user is not None:
+            return user
+        email_lower = email.lower()
+        for u in api.user.get_users():
+            if email_lower == u.getProperty('billing_email', '').lower():
+                return u
+        return None  # user does not exists
