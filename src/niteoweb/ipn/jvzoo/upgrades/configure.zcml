@@ -1,0 +1,14 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:gs="http://namespaces.zope.org/genericsetup"
+  i18n_domain="niteoweb.plr">
+
+  <gs:upgradeStep
+    title="1-2"
+    description="Apply profile to register billing_email property."
+    source="1"
+    destination="2"
+    handler=".upgrades.upgrade_1_to_2"
+    profile="niteoweb.ipn.jvzoo:default" />
+
+</configure>

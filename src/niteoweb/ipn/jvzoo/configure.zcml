@@ -25,4 +25,7 @@
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 
+    <!-- Include upgrades -->
+    <include package=".upgrades" />
+
 </configure>
