@@ -4,7 +4,10 @@ Changelog
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Support for billing email address (this is the users PayPal email address).
+  Prior to enable and disable code, this feature searches for username
+  (which is in fact users email address) and billing email address.
+  [matejc]
 
 
 1.4 (2013-06-11)

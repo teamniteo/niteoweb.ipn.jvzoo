@@ -163,6 +163,32 @@ class TestJVZoo(IntegrationTestCase):
             "Calling 'enable_member' in niteoweb.ipn.core.",
         )
 
+    def test_user_by_email_billing_address(self):
+        """Test get_user_by_email method with existing user and billing email."""  # noqa
+        # create new user and set it some billing_email
+        user = api.user.create(email='some.user@xyz.xyz')
+        user.setMemberProperties({'billing_email': 'billing.email@xyz.xyz'})
+
+        self.assertEqual(
+            self.view.get_user_by_email('some.user@xyz.xyz'),
+            self.view.get_user_by_email('billing.email@xyz.xyz')
+        )
+
+    def test_user_by_email_billing_none(self):
+        """Test get_user_by_email method with existing user no billing email.
+        """
+        self.assertEqual(
+            api.user.create(email='some.other.user@xyz.xyz'),
+            self.view.get_user_by_email('some.other.user@xyz.xyz')
+        )
+
+    def test_user_by_email_billing_non_existing(self):
+        """Test get_user_by_email method with non-existing email.
+        """
+        user = api.user.create(email='some.other.user@xyz.xyz')
+        user.setMemberProperties({'billing_email': 'billing.email@xyz.xyz'})
+        self.assertIsNone(self.view.get_user_by_email('not@xyz.xyz'))
+
 
 class TestTransactionTypesToActionsMapping(TestJVZoo):
     """Test how Transaction Types map to niteoweb.ipn.core actions."""
