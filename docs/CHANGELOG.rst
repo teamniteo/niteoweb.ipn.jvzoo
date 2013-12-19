@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.5 (unreleased)
+1.5 (2013-12-19)
 ----------------
 
 - Support for billing email address (this is the users PayPal email address).
