@@ -6,7 +6,7 @@ install:
   - make .installed.cfg
 
 script:
-  - make tests
+  - make coverage
 
 notifications:
   irc:
