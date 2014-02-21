@@ -6,8 +6,11 @@ install:
   - make .installed.cfg
 
 script:
-  - make tests
+  - make coverage
 
 notifications:
   irc:
-    - "irc.freenode.org#niteoweb"
+    channels:
+      - "irc.freenode.org#niteoweb"
+    template:
+      - "%{repository}/#%{build_number}/%{branch} (%{author}): %{message} %{build_url}"

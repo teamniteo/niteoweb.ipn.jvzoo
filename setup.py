@@ -49,6 +49,7 @@ setup(
             'unittest2',
         ],
         'develop': [
+            'coverage',
             'flake8',
             'jarn.mkrelease',
             'niteoweb.loginas',

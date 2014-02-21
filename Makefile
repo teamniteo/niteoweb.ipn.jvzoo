@@ -7,6 +7,14 @@ options =
 
 all: docs tests
 
+coverage: htmlcov/index.html
+
+htmlcov/index.html: src/niteoweb/ipn/jvzoo/*.py bin/coverage
+	@bin/coverage run --source=./src/niteoweb/ipn/jvzoo --branch bin/test
+	@bin/coverage html -i --fail-under 98
+	@touch $@
+	@echo "Coverage report was generated at '$@'."
+
 .installed.cfg: bin/buildout buildout.cfg buildout.d/*.cfg setup.py
 	bin/buildout $(options)
 
